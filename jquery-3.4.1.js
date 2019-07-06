@@ -3712,7 +3712,6 @@ jQuery.extend( {
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
-			debugger
 			var list = tuple[ 2 ],
 				stateString = tuple[ 5 ];
 

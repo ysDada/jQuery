@@ -53,56 +53,121 @@
     }
 
     var optionsCache = {}
-
-    jQuery.Callbacks = function(options){
-        options = typeof options === "string" ? (optionsCache[options] || createOptions(options)) : {}
-        var list = []   //储存函数
-        var index,length,testting,memory,start,starts
-        var fire = function(data){
-            length = list.length
-            index = starts || 0
-            //控制memory参数,将data赋值给memory
-            memory = options.memory && data
-            testting = true
-            for(; index < length; index++){
-                //控制stopOnFalse参数，如果函数返回false，则retun
-                if(list[index].apply(data[0],data[1]) === false && options.stopOnFalse){
-                    break
-                }
-            }
-        }
-        var self = {
-            //将传进来的方法放入list队列中
-            add(){
-                start = list.length;
-                [...arguments].forEach((fn)=>{
-                    if(toString.call(fn)==="[object Function]"){
-                        //控制unique参数
-                        if(!options.unique || list.indexOf(fn) <= -1){
-                            list.push(fn)
-                        }
+    jQuery.extend({
+        //Callbacks队列函数，用于管理函数队列
+        Callbacks: function(options){
+            options = typeof options === "string" ? (optionsCache[options] || createOptions(options)) : {}
+            var list = []   //储存函数
+            var index,length,testting,memory,start,starts
+            var fire = function(data){
+                length = list.length
+                index = starts || 0
+                //控制memory参数,将data赋值给memory
+                memory = options.memory && data
+                testting = true
+                for(; index < length; index++){
+                    //控制stopOnFalse参数，如果函数返回false，则retun
+                    if(list[index].apply(data[0],data[1]) === false && options.stopOnFalse){
+                        break
                     }
-                })
-                if(memory){
-                    starts = start
-                    fire(memory)
                 }
-            },
-            //控制参数的传递
-            fireWith(content, arguments){
-                //控制once参数
-                if(!options.once || !testting){
-                    fire([content, arguments])
-                }
-            },
-            //控制上下文的绑定
-            fire(){
-                self.fireWith(this, arguments)
             }
-        }
-        return self
-    }
+            var self = {
+                //将传进来的方法放入list队列中
+                add(){
+                    start = list.length;
+                    [...arguments].forEach((fn)=>{
+                        if(toString.call(fn)==="[object Function]"){
+                            //控制unique参数
+                            if(!options.unique || list.indexOf(fn) <= -1){
+                                list.push(fn)
+                            }
+                        }
+                    })
+                    if(memory){
+                        starts = start
+                        fire(memory)
+                    }
+					return this;
+                },
+                //控制上下文的对象
+                fireWith(content, arguments){
+                    //控制once参数
+                    if(!options.once || !testting){
+                        fire([content, arguments])
+                    }
+                },
+                //控制参数的传递
+                fire(){
+                    self.fireWith(this, arguments)
+                }
+            }
+            return self
+        },
+		// 异步回调解决方案
+        Deferred: function(func){
+            //延迟对象的三种不同状态信息描述
+            var tuples = [
+                ["resolve", "done", jQuery.Callbacks("once memory"), "resolved"],
+                ["reject", "fail", jQuery.Callbacks("once memory"), "rejected"],
+                ["notify", "progress", jQuery.Callbacks("memory")],
+            ],
+            state = "pedding",
+            promise = {
+                state(){
+                    return state
+                },
+                then(){
+                },
+                promise(obj){
+                    return obj != null ? jQuery.extend(obj, promise) : promise
+                }
+            },
+            //延迟对象
+            deferred = {}
 
+            tuples.forEach((tuple, i)=>{
+                var list = tuple[2],    //创建一个队列，会创建三次队列
+                    stateString = tuple[3]
+
+                //promise[ done | fail | progress ] = list.add
+                //调用done,fail,progress会给队列里面添加处理函数
+                promise[tuple[1]] = list.add
+
+                if(stateString){    //添加第一个处理程序
+                    list.add(function(){
+                        state = stateString
+                    })
+                }
+
+                //给deferred扩展resolve,reject,notify属性
+                // deferred.notify = function() { deferred.notifyWith(...) }
+                // deferred.resolve = function() { deferred.resolveWith(...) }
+                // deferred.reject = function() { deferred.rejectWith(...) }
+                deferred[tuple[0]] = function(){
+                    deferred[tuple[0] + "With"](this === deferred ? promise : this , arguments)
+                    return this
+                }
+                // deferred.notifyWith = list.fireWith
+                // deferred.resolveWith = list.fireWith
+                // deferred.rejectWith = list.fireWith
+                // 执行队列，并且传参
+                deferred[tuple[0] + "With"] = list.fireWith
+            })
+
+            //扩展deferred属性，相当于合并promise跟deferred,
+            //基本数据类型传参是按值传递，不会改变原对象。引用数据类型按对象传递、按对象共享传递，该方法会改变实参deferred
+            // deferred对象上面有 resolve | reject | notify | state | then | promise | done | fail | progress | notifyWith | rejectWith | resolveWith
+            promise.promise(deferred)
+
+            return deferred
+        },
+        //接受一个或多个延迟对象的回调函数
+        when(subordinate){
+            return subordinate.promise()
+        }
+    })
+    
     //接受参数，支持多个参数传递，将其保存到optionsCache缓存里面
     function createOptions(options){
         var object = optionsCache[options] = {}

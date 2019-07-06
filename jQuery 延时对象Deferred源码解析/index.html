@@ -12,21 +12,21 @@
 </html>
 <script src="./jQuery1.0.1.js"></script>
 <script>
+    var wait = function() {
+        var der = $.Deferred();  //返回延迟对象
+        var test = function(){
+            console.log("老司机开车了");
+            der.resolve("ys")   //成功  调用成功队列中的处理函数,相当于list.fire()，其实是list.fireWith()
+        }
+        test()
+        return der  //返回延迟对象
+    }
     
-
-    // var wait = function() {
-    //     var der = $.Defered();
-    //     var test = function(){
-    //         console.log("老司机开车了");
-    //         der.resolve()
-    //     }
-    //     setTimeout(test, 2000)
-    // }
-    // $.when(wait())
-    //     .done(function(){
-    //         console.log("执行成功")
-    //     })
-    //     .fail(function(){
-    //         console.log("执行失败")
-    //     })
+    $.when(wait())  //会返回promise对象
+        .done(function(data){   //相当于list.add  由于内部配置了memory,会调用list.fire(),因此会执行其中的方法
+            console.log("执行成功",data)
+        })
+        .fail(function(){
+            console.log("执行失败")
+        })
 </script>
