@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="jQuery1.0.1.js"></script>
+    <script>
+        var obj1 = {
+            name: "ys",
+            attr: {
+                age: {
+                    a: 1
+                }
+            }
+        }
+        var obj2 = {
+            name: "ys",
+            attr: {
+                sex: "男",
+                age: {
+                    b: 2
+                }
+            }
+        }
+        var obj = $.extend(true, {}, obj1, obj2)
+        console.log(obj)
+        
+        // //任意对象扩展
+        var obj = $.fn.extend({sex: "男"},{name: "ys"})
+        console.log(obj)
+
+        // //往其本身扩展
+        $.extend({
+            work: function(){}
+        })
+        jQuery.work()
+
+        //通过fn扩展
+        $.fn.extend({
+            sex: "男"
+        })
+        jQuery().sex  //男
+    </script>
+</head>
+<body>
+</body>
+</html>
