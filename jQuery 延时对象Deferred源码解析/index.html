@@ -12,15 +12,21 @@
 </html>
 <script src="./jQuery1.0.1.js"></script>
 <script>
-    var cb = _.callbacks('memory')
-    cb.add(function(){
-        console.log(111)
-    })
-    cb.add(function(){
-        console.log(333)
-    })
-    cb.fire()
-    cb.add(function(){
-        console.log(222)
-    })
+    
+
+    // var wait = function() {
+    //     var der = $.Defered();
+    //     var test = function(){
+    //         console.log("老司机开车了");
+    //         der.resolve()
+    //     }
+    //     setTimeout(test, 2000)
+    // }
+    // $.when(wait())
+    //     .done(function(){
+    //         console.log("执行成功")
+    //     })
+    //     .fail(function(){
+    //         console.log("执行失败")
+    //     })
 </script>
