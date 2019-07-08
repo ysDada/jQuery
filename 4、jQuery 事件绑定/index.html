@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="jQuery1.0.1.js"></script>
+</head>
+<body>
+    <ul id="target">
+        <li>语文</li>
+        <li>英语</li>
+        <li>数学</li>
+        <li>化学</li>
+    </ul>
+</body>
+</html>
+<script>
+    // var target = document.getElementById("target")
+    // target.onclick = ((e)=>{
+    //     let item = e.target
+    //     if(item.nodeName.toLowerCase() === "li"){
+    //         alert(item.innerHTML)
+    //     }
+    // })
+    
+    $("target").on("click", function(){
+        console.log("loading")
+    })
+</script>
