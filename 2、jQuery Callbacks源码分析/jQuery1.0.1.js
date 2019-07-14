@@ -66,7 +66,7 @@
             memory = options.memory && data
             testting = true
             for(; index < length; index++){
-                //控制stopOnFalse参数，如果函数返回false，则retun
+                //控制stopOnFalse参数，如果函数返回false，则return
                 if(list[index].apply(data[0],data[1]) === false && options.stopOnFalse){
                     break
                 }

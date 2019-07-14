@@ -54,6 +54,18 @@
 
     var optionsCache = {}
     jQuery.extend({
+		//类型检测     
+		isPlainObject: function(obj) {
+			return typeof obj === "object";
+		},
+
+		isArray: function(obj) {
+			return toString.call(obj) === "[object Array]";
+		},
+
+		isFunction: function(fn) {
+			return toString.call(fn) === "[object Function]";
+        },
         //Callbacks队列函数，用于管理函数队列
         Callbacks: function(options){
             options = typeof options === "string" ? (optionsCache[options] || createOptions(options)) : {}
@@ -118,6 +130,22 @@
                     return state
                 },
                 then(){
+                    var funs = Array.from(arguments)
+                    //newDeferred
+                    return jQuery.Deferred(function(newDeferred){
+                        tuples.forEach((tuple, i)=>{
+                            var fn = jQuery.isFunction(funs[i]) && funs[i]
+                            deferred[tuple[1]](function(){
+                                var returnDeferred = fn && fn.apply(this, arguments)
+                                if(returnDeferred && jQuery.isFunction(returnDeferred.promise)){
+                                    returnDeferred.promise()
+                                    .done(newDeferred.resolve)
+                                    .fail(newDeferred.reject)
+                                    .progress(newDeferred.notify)
+                                }
+                            })
+                        })
+                    }).promise()
                 },
                 promise(obj){
                     return obj != null ? jQuery.extend(obj, promise) : promise
@@ -159,6 +187,11 @@
             //基本数据类型传参是按值传递，不会改变原对象。引用数据类型按对象传递、按对象共享传递，该方法会改变实参deferred
             // deferred对象上面有 resolve | reject | notify | state | then | promise | done | fail | progress | notifyWith | rejectWith | resolveWith
             promise.promise(deferred)
+
+            if(func){
+                //newDeferred
+                func.call(deferred, deferred)
+            }
 
             return deferred
         },

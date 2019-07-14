@@ -19,8 +19,9 @@
     cb.add(function(){
         console.log(333)
     })
-    cb.fire()
-    cb.add(function(){
+    cb.fire('123')
+    cb.add(function(res){
+        console.log(res)
         console.log(222)
     })
     // cb.fire()
