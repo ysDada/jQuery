@@ -61,6 +61,7 @@
         var fire = function(data){
             length = list.length
             index = starts || 0
+            starts = 0
             //控制memory参数,将data赋值给memory
             memory = options.memory && data
             testting = true
