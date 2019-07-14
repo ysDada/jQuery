@@ -167,6 +167,29 @@
             return subordinate.promise()
         }
     })
+
+    jQuery.fn.extend({
+        on(types, fn){
+            var type;
+            if(typeof types === "object"){
+                for(type in types){
+                    this.on(type[type], fn)
+                }
+            }
+            return this.each(()=>{
+                jQuery.event.add(this, types, fn)
+            })
+        }
+    })
+
+    jQuery.event = {
+        //elem当前dom元素
+        add(elem, type, handler){
+            var eventHandle, event, handlers;
+            var elemData = data_priv.get(elem)
+
+        }
+    }
     
     //接受参数，支持多个参数传递，将其保存到optionsCache缓存里面
     function createOptions(options){

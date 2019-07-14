@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input id="input" />
+		<div id="box"></div>
+		<script src="./jQuery1.0.1.js"></script>
+		<script>
+			//event  模拟事件对象  name 自定义参数
+			$("#box").on("createEvent", function(event, name) {
+				console.log(name)
+				console.log("loading...");
+			})
+			$("body").on("createEvent", function(event, name) {
+				console.log("loading...");
+			})
+			$("#box").trigger("createEvent", "max");
+
+			// var data = {
+			// 	cache: {
+			// 	}
+			// }
+
+			// var data2 = data.cache
+
+			// data2.events = 123
+			// console.log(data)
+
+			// let event1, event2
+			
+			// if(!(event=event2)){
+			// 	console.log(event===event2)
+			// 	event2 = {}
+			// 	console.log(event===event2)
+			// }
+			
+			//执行浏览器默认事件  相当于执行了原生onfocus事件(怎么做到的)？
+// 			$('input').on('focus',function(){
+// 				console.log("loading...");
+// 			});
+// 
+  			// $('input').trigger('focus');
+		</script>
+	</body>
+</html>
