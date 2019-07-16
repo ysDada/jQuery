@@ -696,8 +696,26 @@
                 jQuery.event.trigger(type, data, this)
             })
         },
-        addClass(clazz){
-            
+        addClass(value){
+            var len = this.length, cur, j, i = 0
+            var proceed = typeof value === "string" && value
+            var classes, clazz
+            if(proceed){
+                classes = value.match(/\S+/g)
+                for(; i < len; i++){
+                    elem = this[i]
+                    cur = elem.nodeType === 1 && elem.className ? `${elem.className} ` : ""
+                    if(cur){
+                        j = 0
+                        while((clazz = classes[j++])){
+                            if(cur.indexOf(`${clazz} `) === -1){
+                                cur += `${clazz} `
+                            }
+                        }
+                        elem.className = cur
+                    }
+                }
+            }
         }
     })
 
