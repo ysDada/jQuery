@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style>
+		.box{
+			height: 200px;
+			font-size: 24px;
+		}
+	</style>
+	<body>
+		<div class="box"></div>
+		<script src="./jQuery1.0.1.js"></script>
+		<script>
+			var box = $('box')
+
+			function fn1(next){
+				console.log('这是方法1')
+				// next()
+			}
+			function fn2(next){
+				console.log('这是方法2')
+			}
+			
+			//给dom元素box上存储名为first的函数队列
+			jQuery.queue(box, "first", fn1)
+			jQuery.queue(box, "first", fn2)
+
+			console.log(jQuery.queue(box, "first"))
+
+			//执行队列
+			jQuery.dequeue(box, "first")
+			// jQuery.dequeue(box, "first")
+		</script>
+	</body>
+</html>
+<style>
+.box{
+	width: 100px;
+	height: 100px;
+}
+.redClass{
+	background: red
+}
+.borderClass{
+	border: 10px solid black
+}
+</style>
