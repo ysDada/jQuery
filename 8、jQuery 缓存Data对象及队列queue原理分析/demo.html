@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style>
+		.box{
+			height: 200px;
+			font-size: 24px;
+		}
+	</style>
+	<body>
+		<div class="box"></div>
+		<script src="./jQuery1.0.1.js"></script>
+		<script>
+			//dom元素存储数据，不是直接将数据绑定到dom元素上
+			$(".box").data("key", "max")	//储存
+			
+			console.log($(".box").data("key"))	//取
+		</script>
+	</body>
+</html>
+<style>
+.box{
+	width: 100px;
+	height: 100px;
+}
+.redClass{
+	background: red
+}
+.borderClass{
+	border: 10px solid black
+}
+</style>

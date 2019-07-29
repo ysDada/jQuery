@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style>
+	</style>
+<body>
+	<div class="box">
+		<img data-url="https://git-scm.com/images/branching-illustration@2x.png"/>
+		<img data-url="https://git-scm.com/images/branching-illustration@2x.png"/>
+		<img data-url="https://git-scm.com/images/branching-illustration@2x.png"/>
+		<img data-url="https://git-scm.com/images/branching-illustration@2x.png"/>
+	</div>
+	<script src="./jquery-3.4.1.js"></script>
+	<script>
+		//placeholder	占位图片
+		//threshold: 200, // 提前开始加载
+		$("img").lazyload({
+			placeholder: "./185451a6cum5z61ho8kb6k.jpg",
+			threshold: -300
+		})
+	</script>
+</body>
+</html>
+<style>
+.box{
+	width: 300px;
+}
+img{
+	width: 300px;
+	height: 300px;
+}
+</style>
