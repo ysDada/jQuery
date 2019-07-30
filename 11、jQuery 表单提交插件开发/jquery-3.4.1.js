@@ -3018,7 +3018,6 @@ var rootjQuery,
 		// HANDLE: $(function)
 		// Shortcut for document ready
 		} else if ( isFunction( selector ) ) {
-			debugger
 			return root.ready !== undefined ?
 				root.ready( selector ) :
 
@@ -3857,8 +3856,6 @@ jQuery.readyException = function( error ) {
 var readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
-	debugger
-
 	readyList
 		.then( fn )
 
@@ -6167,7 +6164,7 @@ jQuery.fn.extend( {
 
 					elem = 0;
 
-				// If using innerHTML throws an exception, use the fallback 	method
+				// If using innerHTML throws an exception, use the fallback method
 				} catch ( e ) {}
 			}
 
@@ -10453,8 +10450,132 @@ jQuery.fn.extend( {
 	}
 } );
 
+jQuery.fn.extend( {
+	lazyload(options){
+		let elem = this,
+			expando = jQuery.expando,
+			settings = {
+				placeholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC",
+				threshold: 0
+			}
+		
+		if(options){
+			jQuery.extend(settings, options)
+		}
 
+		//判断是否位于窗口内
+		let inviewport = function(element) {
+			//元素位于可视窗口之下
+			let below = function(element) {
+				return window.innerHeight + $(window).scrollTop() <= element.offset().top - settings.threshold
+			}
+			//元素位于可视窗口之上
+			let above = function(element) {
+				return $(window).scrollTop() >= element.offset().top + settings.threshold + element.height()
+			}
+			
+			return !below(element) && !above(element)
+		}
 
+		//加载img
+		let init = function(){
+			elem.each(function(){
+				let self = this,
+					$self = $(self),
+					url = $self.attr('data-url') || ''
+
+				if ($self.attr("src") === undefined) {
+					// console.log(inviewport($self))
+					if(inviewport($self)){
+						$self[expando] = 1	//已加载
+						$self.attr("src", url)
+					} else {
+						$self.attr("src", settings.placeholder)
+					}
+				} else if(!$self[expando] && inviewport($self)){
+					$self.attr("src", url)
+				}
+			})
+		}
+		
+		//定义事件函数:
+		let onScroll = function() {
+			init();
+		}
+		$(window).scroll(onScroll)
+
+		$(document).ready(function() {
+            init();
+        });
+	}
+});
+
+jQuery.fn.extend( {
+	validate(options){
+		if(!this.is('form')){
+			throw new Error('dom元素错误')
+		}
+
+		//默认值常量
+		var _default = {
+			defaultEvent: 'change',
+			errorMsg: '输入错误'
+		}
+
+		//规则
+		var _rule = {
+			"id-card":function(){
+				return /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(this.val())
+			},//身份证号码验证
+			"phone":function(){
+				return /^1[3456789]\d{9}$/.test(this.val())
+			},//手机电话号码
+			"email":function(){
+				return /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(this.val())
+			},//电子邮箱验证
+			"require":function(){
+				let val = this.val() || ""
+				return val!=""
+			},//必填字段验证
+			"range-num":function(){
+				let min = $(this).attr('min') || ""
+				let max = $(this).attr('max') || ""
+				let val = this.val() || ""
+
+				if(!/^-?[1-9]\d*$/.test(this.val())){
+					return false
+				}
+				if(min && max){
+					return val >= min && val <=max
+				} else if(min && !max){
+					return val >= min
+				} else if(!min && max){
+					return val <= max
+				}
+
+			},//最大值/最小值验证
+		}
+
+		if(options){
+			jQuery.extend(_default, options)
+		}
+
+		let fields = this.find("input,textarea,select").not("input[type=submit]")
+
+		fields.on(_default.defaultEvent,function(){
+			let field = $(this)
+			let _err = true	//校验结果
+			jQuery.each(_rule, function(rule,func){
+				if(field.data(rule)){
+					_err = func.call(field)
+					if(!_err){
+						alert(field.data(`${rule}-msg`) || _default.errorMsg)
+					}
+				}
+			})
+		})
+	}
+})
 
 jQuery.fn.extend( {
 

@@ -10482,8 +10482,7 @@ jQuery.fn.extend( {
 		//加载img
 		let init = function(){
 			elem.each(function(){
-				let self = this,
-					$self = $(self),
+				let $self = $(this),
 					url = $self.attr('data-url') || ''
 
 				if ($self.attr("src") === undefined) {
