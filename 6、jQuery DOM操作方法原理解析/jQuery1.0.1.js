@@ -657,7 +657,7 @@
 
     jQuery.fn.extend({
         text(value){    //value有值,用set操作，如果没有值，则做get操作
-            return jQuery.access(this, function(key, value){
+            return jQuery.access(this, function( value){
                 return value === undefined ? jQuery.text(this) : jQuery.content(this,value)
             }, null, value) //value === undefind || value === String
         },
@@ -673,7 +673,7 @@
             }, key, value) //value === undefind || value === String
         },
         html(value){    //value有值,用set操作，如果没有值，则做get操作
-            return jQuery.access(this, function(key, value){
+            return jQuery.access(this, function( value){
                 return value === undefined ? jQuery.htmlContent(this) : jQuery.htmlSet(this,value)
             }, null, value) //value === undefind || value === String
         },
