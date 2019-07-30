@@ -10450,8 +10450,6 @@ jQuery.fn.extend( {
 	}
 } );
 
-
-
 jQuery.fn.extend( {
 	lazyload(options){
 		let elem = this,
@@ -10482,7 +10480,8 @@ jQuery.fn.extend( {
 		//加载img
 		let init = function(){
 			elem.each(function(){
-				let $self = $(this),
+				let self = this,
+					$self = $(self),
 					url = $self.attr('data-url') || ''
 
 				if ($self.attr("src") === undefined) {
@@ -10511,6 +10510,72 @@ jQuery.fn.extend( {
 	}
 });
 
+jQuery.fn.extend( {
+	validate(options){
+		if(!this.is('form')){
+			throw new Error('dom元素错误')
+		}
+
+		//默认值常量
+		var _default = {
+			defaultEvent: 'change',
+			errorMsg: '输入错误'
+		}
+
+		//规则
+		var _rule = {
+			"id-card":function(){
+				return /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(this.val())
+			},//身份证号码验证
+			"phone":function(){
+				return /^1[3456789]\d{9}$/.test(this.val())
+			},//手机电话号码
+			"email":function(){
+				return /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(this.val())
+			},//电子邮箱验证
+			"require":function(){
+				let val = this.val() || ""
+				return val!=""
+			},//必填字段验证
+			"range-num":function(){
+				let min = $(this).attr('min') || ""
+				let max = $(this).attr('max') || ""
+				let val = this.val() || ""
+
+				if(!/^-?[1-9]\d*$/.test(this.val())){
+					return false
+				}
+				if(min && max){
+					return val >= min && val <=max
+				} else if(min && !max){
+					return val >= min
+				} else if(!min && max){
+					return val <= max
+				}
+
+			},//最大值/最小值验证
+		}
+
+		if(options){
+			jQuery.extend(_default, options)
+		}
+
+		let fields = this.find("input,textarea,select").not("input[type=submit]")
+
+		fields.on(_default.defaultEvent,function(){
+			let field = $(this)
+			let _err = true	//校验结果
+			jQuery.each(_rule, function(rule,func){
+				if(field.data(rule)){
+					_err = func.call(field)
+					if(!_err){
+						alert(field.data(`${rule}-msg`) || _default.errorMsg)
+					}
+				}
+			})
+		})
+	}
+})
 
 jQuery.fn.extend( {
 
