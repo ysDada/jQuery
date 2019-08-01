@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style>
+	</style>
+<body>
+	<form>
+        <div>
+            <input
+                data-require="true"
+                data-id-card="true"
+                data-id-card-msg="请输入正确的身份证"
+                type="text" placeholder="idcard">
+        </div>
+        <div>
+            <input
+                data-require="true"
+                data-phone="true"
+                data-phone-msg="请输入正确的手机号码"
+                type="text" placeholder="phone">
+        </div>
+        <div>
+            <input
+                data-require="true"
+                data-email="true"
+                data-email-msg="请输入正确的邮箱"
+                type="text" placeholder="email">
+		</div>
+        <div>
+            <input
+                data-require="true"
+				data-range-num="true"
+				max="10"
+                type="text" placeholder="range">
+        </div>
+		
+        <button type="submit">确认</button>
+        <button type="submit">重置</button>
+    </form>
+	<script src="./jquery-3.4.1.js"></script>
+    <script>
+		$("form"). validate({
+			defaultEvent: "change" //自定义校验触发事件
+		})
+    </script>
+</body>
+</html>
